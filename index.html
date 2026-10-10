@@ -1,1 +1,1738 @@
-1
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DesiWaves - Indian Radio & Recommendations</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Rozha+One&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-dark: #0b0f19;
+      --bg-card: rgba(22, 28, 45, 0.75);
+      --bg-card-hover: rgba(33, 42, 69, 0.85);
+      --accent-saffron: #ff7722;
+      --accent-amber: #f59e0b;
+      --accent-gold: #fbbf24;
+      --accent-emerald: #10b981;
+      --accent-rose: #f43f5e;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --border-subtle: rgba(255, 255, 255, 0.08);
+      --border-glow: rgba(255, 119, 34, 0.3);
+      --player-height: 90px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background: radial-gradient(circle at 10% 20%, #151a2d 0%, var(--bg-dark) 80%);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+      padding-bottom: calc(var(--player-height) + 24px);
+    }
+
+    /* Ambient top glow */
+    .ambient-glow {
+      position: fixed;
+      top: -160px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 700px;
+      height: 380px;
+      background: radial-gradient(circle, rgba(255, 119, 34, 0.18) 0%, rgba(245, 158, 11, 0.08) 45%, transparent 70%);
+      filter: blur(80px);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* Header */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      background: rgba(11, 15, 25, 0.82);
+      border-bottom: 1px solid var(--border-subtle);
+      padding: 0.85rem 1.5rem;
+    }
+
+    .header-inner {
+      max-width: 1300px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+
+    .logo-area {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      text-decoration: none;
+      color: inherit;
+      cursor: pointer;
+    }
+
+    .logo-badge {
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #ff6b1a, #ff9f1c);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 18px rgba(255, 107, 26, 0.45);
+      position: relative;
+    }
+
+    .logo-badge svg {
+      width: 22px;
+      height: 22px;
+      stroke: #fff;
+    }
+
+    .logo-title {
+      font-size: 1.35rem;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      display: flex;
+      align-items: baseline;
+      gap: 4px;
+    }
+
+    .logo-title span {
+      background: linear-gradient(to right, #ff8a3d, #ffd166);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .flag-tag {
+      font-size: 0.65rem;
+      padding: 2px 6px;
+      border-radius: 4px;
+      background: rgba(255, 255, 255, 0.1);
+      color: #cbd5e1;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .search-box-wrapper {
+      flex: 1;
+      max-width: 480px;
+      position: relative;
+    }
+
+    .search-input {
+      width: 100%;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 100px;
+      padding: 0.65rem 1.1rem 0.65rem 2.6rem;
+      color: #fff;
+      font-size: 0.9rem;
+      font-family: inherit;
+      outline: none;
+      transition: all 0.2s ease;
+    }
+
+    .search-input:focus {
+      background: rgba(255, 255, 255, 0.09);
+      border-color: var(--accent-saffron);
+      box-shadow: 0 0 0 3px rgba(255, 119, 34, 0.2);
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 18px;
+      height: 18px;
+      stroke: var(--text-muted);
+      pointer-events: none;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+
+    .btn-icon {
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid var(--border-subtle);
+      border-radius: 10px;
+      width: 38px;
+      height: 38px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-icon:hover {
+      color: #fff;
+      background: rgba(255, 255, 255, 0.12);
+    }
+
+    /* Main Container */
+    main {
+      max-width: 1300px;
+      margin: 0 auto;
+      padding: 1.5rem;
+      width: 100%;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Hero Recommendation Spotlight */
+    .hero-spotlight {
+      margin-bottom: 2rem;
+      background: linear-gradient(135deg, rgba(42, 22, 12, 0.8) 0%, rgba(20, 24, 40, 0.9) 100%);
+      border: 1px solid rgba(255, 120, 36, 0.25);
+      border-radius: 20px;
+      padding: 1.75rem 2rem;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 1.5rem;
+      align-items: center;
+      box-shadow: 0 16px 36px -10px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-spotlight::before {
+      content: '';
+      position: absolute;
+      right: -50px;
+      top: -50px;
+      width: 300px;
+      height: 300px;
+      background: radial-gradient(circle, rgba(255, 119, 34, 0.25) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .spotlight-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: 99px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      background: rgba(255, 119, 34, 0.2);
+      color: #ff9d54;
+      border: 1px solid rgba(255, 119, 34, 0.35);
+      margin-bottom: 0.6rem;
+    }
+
+    .spotlight-badge .pulse-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #ff7722;
+      animation: pulse 1.6s infinite;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(0.9); opacity: 0.8; }
+      50% { transform: scale(1.3); opacity: 1; box-shadow: 0 0 10px #ff7722; }
+      100% { transform: scale(0.9); opacity: 0.8; }
+    }
+
+    .hero-spotlight h1 {
+      font-size: 1.85rem;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      line-height: 1.2;
+      margin-bottom: 0.5rem;
+    }
+
+    .hero-spotlight p {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      max-width: 580px;
+      line-height: 1.5;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 0.85rem;
+      margin-top: 1.2rem;
+      flex-wrap: wrap;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #ff6b1a, #ea580c);
+      color: #fff;
+      font-weight: 700;
+      font-size: 0.9rem;
+      padding: 0.75rem 1.4rem;
+      border-radius: 12px;
+      border: none;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 8px 20px rgba(234, 88, 12, 0.35);
+      transition: all 0.2s ease;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 24px rgba(234, 88, 12, 0.45);
+    }
+
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.08);
+      color: #fff;
+      font-weight: 600;
+      font-size: 0.9rem;
+      padding: 0.75rem 1.25rem;
+      border-radius: 12px;
+      border: 1px solid var(--border-subtle);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s;
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.15);
+    }
+
+    .spotlight-cover-wrap {
+      position: relative;
+      width: 130px;
+      height: 130px;
+      border-radius: 18px;
+      overflow: hidden;
+      box-shadow: 0 12px 30px rgba(0,0,0,0.5);
+      flex-shrink: 0;
+    }
+
+    .spotlight-cover {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    /* Recommendation Mood & Language Filters */
+    .filter-section {
+      margin-bottom: 2rem;
+    }
+
+    .filter-label {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--text-muted);
+      font-weight: 700;
+      margin-bottom: 0.7rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .tag-pills {
+      display: flex;
+      gap: 0.6rem;
+      overflow-x: auto;
+      padding-bottom: 6px;
+      scrollbar-width: none;
+    }
+
+    .tag-pills::-webkit-scrollbar {
+      display: none;
+    }
+
+    .pill-btn {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.09);
+      color: #cbd5e1;
+      padding: 0.5rem 1.1rem;
+      border-radius: 100px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .pill-btn:hover {
+      background: rgba(255, 255, 255, 0.12);
+      color: #fff;
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+
+    .pill-btn.active {
+      background: #ff7722;
+      color: #fff;
+      border-color: #ff7722;
+      box-shadow: 0 4px 14px rgba(255, 119, 34, 0.4);
+    }
+
+    /* Sections */
+    .section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1rem;
+    }
+
+    .section-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+      letter-spacing: -0.3px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .section-title-icon {
+      color: var(--accent-saffron);
+    }
+
+    .section-count {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      font-weight: 500;
+      margin-left: 4px;
+    }
+
+    /* Grid of Stations */
+    .station-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+      gap: 1.15rem;
+      margin-bottom: 2.5rem;
+    }
+
+    .station-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 16px;
+      padding: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      cursor: pointer;
+      position: relative;
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      user-select: none;
+    }
+
+    .station-card:hover {
+      background: var(--bg-card-hover);
+      transform: translateY(-3px);
+      border-color: rgba(255, 119, 34, 0.35);
+      box-shadow: 0 12px 24px -6px rgba(0,0,0,0.45);
+    }
+
+    .station-card.playing {
+      border-color: var(--accent-saffron);
+      background: rgba(36, 30, 48, 0.9);
+      box-shadow: 0 0 20px rgba(255, 119, 34, 0.25);
+    }
+
+    .station-cover-box {
+      width: 68px;
+      height: 68px;
+      border-radius: 12px;
+      position: relative;
+      overflow: hidden;
+      flex-shrink: 0;
+      background: #1e2538;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    }
+
+    .station-cover-box img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.3s ease;
+    }
+
+    .station-card:hover .station-cover-box img {
+      transform: scale(1.06);
+    }
+
+    .play-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.45);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transition: opacity 0.2s ease;
+    }
+
+    .station-card:hover .play-overlay,
+    .station-card.playing .play-overlay {
+      opacity: 1;
+    }
+
+    .play-overlay svg {
+      width: 24px;
+      height: 24px;
+      fill: #fff;
+    }
+
+    .station-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .station-title {
+      font-size: 0.98rem;
+      font-weight: 700;
+      color: #fff;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      margin-bottom: 2px;
+    }
+
+    .station-desc {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      margin-bottom: 6px;
+    }
+
+    .station-meta {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .meta-tag {
+      font-size: 0.68rem;
+      padding: 2px 7px;
+      border-radius: 6px;
+      background: rgba(255, 255, 255, 0.06);
+      color: #94a3b8;
+      font-weight: 600;
+    }
+
+    .meta-tag.lang {
+      color: #fdba74;
+      background: rgba(253, 186, 116, 0.12);
+    }
+
+    .fav-btn {
+      background: transparent;
+      border: none;
+      color: rgba(255, 255, 255, 0.35);
+      cursor: pointer;
+      padding: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+      border-radius: 50%;
+    }
+
+    .fav-btn:hover {
+      color: #f43f5e;
+      transform: scale(1.15);
+    }
+
+    .fav-btn.is-fav {
+      color: #f43f5e;
+    }
+
+    /* Equalizer Bars on Card & Player */
+    .mini-eq {
+      display: flex;
+      align-items: flex-end;
+      gap: 2px;
+      height: 16px;
+      width: 16px;
+    }
+
+    .mini-eq span {
+      flex: 1;
+      background: var(--accent-saffron);
+      border-radius: 1px;
+      animation: eqBounce 1s ease-in-out infinite alternate;
+    }
+
+    .mini-eq span:nth-child(1) { height: 40%; animation-delay: 0.1s; }
+    .mini-eq span:nth-child(2) { height: 95%; animation-delay: 0.3s; }
+    .mini-eq span:nth-child(3) { height: 60%; animation-delay: 0.2s; }
+
+    @keyframes eqBounce {
+      0% { height: 20%; }
+      100% { height: 100%; }
+    }
+
+    /* Empty state */
+    .empty-state {
+      text-align: center;
+      padding: 3rem 1rem;
+      color: var(--text-muted);
+    }
+
+    /* Bottom Sticky Player Bar */
+    .player-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: var(--player-height);
+      background: rgba(14, 18, 30, 0.94);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 1.5rem;
+      box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.6);
+      transition: transform 0.3s ease;
+    }
+
+    .player-left {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      width: 30%;
+      min-width: 200px;
+    }
+
+    .player-art-wrap {
+      width: 54px;
+      height: 54px;
+      border-radius: 12px;
+      overflow: hidden;
+      position: relative;
+      background: #1f293d;
+      flex-shrink: 0;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+    }
+
+    .player-art {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .player-station-text {
+      min-width: 0;
+    }
+
+    .player-name {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: #fff;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .player-status-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 2px;
+    }
+
+    .live-indicator {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 0.68rem;
+      font-weight: 700;
+      color: #ff7722;
+      background: rgba(255, 119, 34, 0.15);
+      padding: 1px 6px;
+      border-radius: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .live-dot {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: #ff7722;
+      animation: pulse 1.4s infinite;
+    }
+
+    .player-subtitle {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .player-controls {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      width: 40%;
+    }
+
+    .playback-buttons {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .ctrl-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      width: 36px;
+      height: 36px;
+      transition: all 0.2s;
+    }
+
+    .ctrl-btn:hover {
+      color: #fff;
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .ctrl-btn.play-master {
+      width: 48px;
+      height: 48px;
+      background: #ff7722;
+      color: #fff;
+      box-shadow: 0 4px 16px rgba(255, 119, 34, 0.45);
+      transition: transform 0.15s, background 0.2s;
+    }
+
+    .ctrl-btn.play-master:hover {
+      transform: scale(1.07);
+      background: #ff8539;
+    }
+
+    .ctrl-btn.play-master:active {
+      transform: scale(0.95);
+    }
+
+    .ctrl-btn.play-master svg {
+      width: 24px;
+      height: 24px;
+      fill: currentColor;
+    }
+
+    .player-stream-state {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+    }
+
+    .player-right {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 0.8rem;
+      width: 30%;
+      min-width: 180px;
+    }
+
+    .volume-slider-wrap {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      width: 120px;
+    }
+
+    .volume-slider {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 100%;
+      height: 4px;
+      border-radius: 4px;
+      background: rgba(255, 255, 255, 0.2);
+      outline: none;
+      cursor: pointer;
+    }
+
+    .volume-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: #ff7722;
+      cursor: pointer;
+      box-shadow: 0 0 6px rgba(255, 119, 34, 0.8);
+      transition: transform 0.1s;
+    }
+
+    .volume-slider::-webkit-slider-thumb:hover {
+      transform: scale(1.3);
+    }
+
+    /* Recommendations carousel banner */
+    .rec-pills-bar {
+      display: flex;
+      gap: 0.8rem;
+      overflow-x: auto;
+      padding-bottom: 0.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .rec-box {
+      flex: 0 0 auto;
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.01) 100%);
+      border: 1px solid var(--border-subtle);
+      border-radius: 14px;
+      padding: 0.85rem 1.1rem;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      min-width: 200px;
+    }
+
+    .rec-box:hover {
+      border-color: var(--border-glow);
+      background: rgba(255, 119, 34, 0.1);
+      transform: translateY(-2px);
+    }
+
+    .rec-box-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(255, 119, 34, 0.15);
+      color: #ff9d54;
+      font-size: 1.1rem;
+    }
+
+    .rec-box-title {
+      font-weight: 700;
+      font-size: 0.88rem;
+      color: #fff;
+    }
+
+    .rec-box-sub {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+    }
+
+    /* Modal / Toast notification */
+    .toast {
+      position: fixed;
+      bottom: 105px;
+      right: 24px;
+      background: rgba(20, 26, 42, 0.95);
+      border: 1px solid var(--border-subtle);
+      border-left: 4px solid var(--accent-saffron);
+      color: #fff;
+      padding: 0.75rem 1.2rem;
+      border-radius: 10px;
+      font-size: 0.85rem;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+      z-index: 200;
+      opacity: 0;
+      transform: translateY(10px);
+      transition: all 0.3s ease;
+      pointer-events: none;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Loading Spinner */
+    .spinner {
+      width: 18px;
+      height: 18px;
+      border: 2px solid rgba(255, 255, 255, 0.2);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .header-inner {
+        flex-wrap: wrap;
+      }
+      .search-box-wrapper {
+        order: 3;
+        max-width: 100%;
+        width: 100%;
+        margin-top: 0.35rem;
+      }
+      .hero-spotlight {
+        grid-template-columns: 1fr;
+        padding: 1.3rem;
+        text-align: left;
+      }
+      .spotlight-cover-wrap {
+        display: none;
+      }
+      .station-grid {
+        grid-template-columns: 1fr;
+      }
+      .player-bar {
+        padding: 0 1rem;
+      }
+      .player-right {
+        display: none;
+      }
+      .player-left {
+        width: 60%;
+      }
+      .player-controls {
+        width: 40%;
+        align-items: flex-end;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="ambient-glow"></div>
+
+  <!-- Header -->
+  <header>
+    <div class="header-inner">
+      <div class="logo-area" onclick="filterByLang('all')">
+        <div class="logo-badge">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4.9 19.1C1 15.2 1 8.8 4.9 4.9"/>
+            <path d="M7.8 16.2c-2.3-2.3-2.3-6.1 0-8.5"/>
+            <circle cx="12" cy="12" r="2"/>
+            <path d="M16.2 7.8c2.3 2.3 2.3 6.1 0 8.5"/>
+            <path d="M19.1 4.9C23 8.8 23 15.2 19.1 19.1"/>
+          </svg>
+        </div>
+        <div>
+          <div class="logo-title">
+            Desi<span>Waves</span>
+            <span class="flag-tag">India Live</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="search-box-wrapper">
+        <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="8"/>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+        </svg>
+        <input type="text" id="searchInput" class="search-input" placeholder="Search Bollywood, AIR FM, Punjabi, Tamil, Arijit..." />
+      </div>
+
+      <div class="header-actions">
+        <button class="btn-icon" id="favFilterBtn" title="Show Saved Favorites">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+          </svg>
+        </button>
+        <button class="btn-icon" id="randomStationBtn" title="Surprise Me (Shuffle Station)">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="16 3 21 3 21 8"/>
+            <line x1="4" y1="20" x2="21" y2="3"/>
+            <polyline points="21 16 21 21 16 21"/>
+            <line x1="15" y1="15" x2="21" y2="21"/>
+            <line x1="4" y1="4" x2="9" y2="9"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- Recommendation Hero Spotlight -->
+    <div class="hero-spotlight" id="heroSpotlight">
+      <div>
+        <div class="spotlight-badge">
+          <span class="pulse-dot"></span>
+          Editor's Desi Recommendation
+        </div>
+        <h1 id="heroTitle">Radio City Hindi - Nonstop Bollywood</h1>
+        <p id="heroDesc">The heartbeat of Indian music. Streaming 24/7 chartbuster Bollywood hits, retro melodic gems, and new Hindi favorites.</p>
+        <div class="hero-actions">
+          <button class="btn-primary" id="heroPlayBtn">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+              <polygon points="5 3 19 12 5 21 5 3"/>
+            </svg>
+            Tune In Live
+          </button>
+          <button class="btn-secondary" id="heroSaveBtn">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+            </svg>
+            Add to Favorites
+          </button>
+        </div>
+      </div>
+      <div class="spotlight-cover-wrap">
+        <img id="heroCover" src="https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=400&q=80" alt="Spotlight Radio" class="spotlight-cover" />
+      </div>
+    </div>
+
+    <!-- Curated Mood Recommendations Bar -->
+    <div class="filter-label">Quick Recommendations by Mood & Theme</div>
+    <div class="rec-pills-bar">
+      <div class="rec-box" onclick="filterByTag('Bollywood')">
+        <div class="rec-box-icon">🎬</div>
+        <div>
+          <div class="rec-box-title">Bollywood Hits</div>
+          <div class="rec-box-sub">Chartbusters & Melodies</div>
+        </div>
+      </div>
+      <div class="rec-box" onclick="filterByTag('Devotional')">
+        <div class="rec-box-icon">🪔</div>
+        <div>
+          <div class="rec-box-title">Bhakti & Spiritual</div>
+          <div class="rec-box-sub">Bhajans, Mantras & Gurbani</div>
+        </div>
+      </div>
+      <div class="rec-box" onclick="filterByTag('Retro')">
+        <div class="rec-box-icon">📻</div>
+        <div>
+          <div class="rec-box-title">Golden 70s & 80s</div>
+          <div class="rec-box-sub">Kishore, Lata, Rafi Classics</div>
+        </div>
+      </div>
+      <div class="rec-box" onclick="filterByTag('Chill')">
+        <div class="rec-box-icon">☕</div>
+        <div>
+          <div class="rec-box-title">Desi Lo-Fi & Chill</div>
+          <div class="rec-box-sub">Acoustic, Indie & Late Night</div>
+        </div>
+      </div>
+      <div class="rec-box" onclick="filterByTag('Punjabi')">
+        <div class="rec-box-icon">🥁</div>
+        <div>
+          <div class="rec-box-title">Bhangra & Punjabi</div>
+          <div class="rec-box-sub">High energy beats</div>
+        </div>
+      </div>
+      <div class="rec-box" onclick="filterByTag('AIR')">
+        <div class="rec-box-icon">🎙️</div>
+        <div>
+          <div class="rec-box-title">All India Radio</div>
+          <div class="rec-box-sub">Vividh Bharati & Gold</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Language Filter Pills -->
+    <div class="filter-section">
+      <div class="filter-label">
+        <span>Filter by Language / Region</span>
+        <span id="stationCountDisplay">12 Stations</span>
+      </div>
+      <div class="tag-pills" id="langPills">
+        <button class="pill-btn active" data-lang="all">All India 🇮🇳</button>
+        <button class="pill-btn" data-lang="Hindi">Hindi</button>
+        <button class="pill-btn" data-lang="Punjabi">Punjabi</button>
+        <button class="pill-btn" data-lang="Tamil">Tamil</button>
+        <button class="pill-btn" data-lang="Telugu">Telugu</button>
+        <button class="pill-btn" data-lang="Malayalam">Malayalam</button>
+        <button class="pill-btn" data-lang="Bengali">Bengali</button>
+        <button class="pill-btn" data-lang="Devotional">Spiritual / Bhakti</button>
+        <button class="pill-btn" data-lang="Sufi">Sufi & Ghazals</button>
+      </div>
+    </div>
+
+    <!-- Recommendations Feed -->
+    <div class="section-header">
+      <h2 class="section-title">
+        <svg class="section-title-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+          <circle cx="12" cy="12" r="10"/>
+          <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/>
+          <line x1="12" y1="17" x2="12.01" y2="17"/>
+        </svg>
+        <span id="currentListTitle">Top Recommended Stations</span>
+      </h2>
+    </div>
+
+    <div class="station-grid" id="stationsGrid">
+      <!-- Station cards injected dynamically -->
+    </div>
+  </main>
+
+  <!-- Sticky Bottom Audio Player Bar -->
+  <div class="player-bar" id="playerBar">
+    <div class="player-left">
+      <div class="player-art-wrap">
+        <img id="playerArtwork" src="https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=200&q=80" alt="Cover" class="player-art" />
+      </div>
+      <div class="player-station-text">
+        <div class="player-name" id="playerName">DesiWaves Radio</div>
+        <div class="player-status-row">
+          <span class="live-indicator"><span class="live-dot"></span> LIVE</span>
+          <span class="player-subtitle" id="playerSub">Select any station to play</span>
+        </div>
+      </div>
+      <button class="fav-btn" id="playerFavToggle" title="Save Station">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+        </svg>
+      </button>
+    </div>
+
+    <div class="player-controls">
+      <div class="playback-buttons">
+        <button class="ctrl-btn" id="prevStationBtn" title="Previous station">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polygon points="19 20 9 12 19 4 19 20"/>
+            <line x1="5" y1="19" x2="5" y2="5"/>
+          </svg>
+        </button>
+
+        <button class="ctrl-btn play-master" id="masterPlayBtn" title="Play / Pause">
+          <svg id="playIcon" viewBox="0 0 24 24">
+            <polygon points="5 3 19 12 5 21 5 3"/>
+          </svg>
+          <svg id="pauseIcon" style="display:none;" viewBox="0 0 24 24">
+            <rect x="6" y="4" width="4" height="16"/>
+            <rect x="14" y="4" width="4" height="16"/>
+          </svg>
+          <div class="spinner" id="bufferingSpinner" style="display:none;"></div>
+        </button>
+
+        <button class="ctrl-btn" id="nextStationBtn" title="Next station">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polygon points="5 4 15 12 5 20 5 4"/>
+            <line x1="19" y1="5" x2="19" y2="19"/>
+          </svg>
+        </button>
+      </div>
+      <div class="player-stream-state" id="streamStatus">Indian Broadcast • Hi-Fi Audio</div>
+    </div>
+
+    <div class="player-right">
+      <button class="ctrl-btn" id="muteBtn" title="Mute/Unmute">
+        <svg id="volIcon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+          <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/>
+        </svg>
+      </button>
+      <div class="volume-slider-wrap">
+        <input type="range" class="volume-slider" id="volumeRange" min="0" max="1" step="0.02" value="0.8" />
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div class="toast" id="toastBox">
+    <span id="toastMsg">Station added to favorites</span>
+  </div>
+
+  <!-- Hidden Audio Element -->
+  <audio id="audioElement" preload="none"></audio>
+
+  <script>
+    // Curated Indian Radio Station Catalogue
+    const STATIONS = [
+      {
+        id: "radio-city-hindi",
+        name: "Radio City Hindi",
+        tagline: "Bollywood Chartbusters & New Releases",
+        lang: "Hindi",
+        tags: ["Bollywood", "Trending", "Hits"],
+        stream: "https://stream.zeno.fm/fvrx452618uvv",
+        cover: "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=400&q=80",
+        rating: "4.9 ★",
+        bitrate: "128 kbps",
+        recommended: true
+      },
+      {
+        id: "air-vividh-bharati",
+        name: "Vividh Bharati (AIR)",
+        tagline: "The Voice of the Nation • Sangeet Sartaj",
+        lang: "Hindi",
+        tags: ["AIR", "Retro", "Classics"],
+        stream: "https://stream.zeno.fm/wqh2u23z4ehvv",
+        cover: "https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=400&q=80",
+        rating: "4.8 ★",
+        bitrate: "128 kbps",
+        recommended: true
+      },
+      {
+        id: "retro-bollywood-gold",
+        name: "Bollywood Retro 70s 80s",
+        tagline: "Evergreen Kishore, Lata, Rafi & Pancham Da",
+        lang: "Hindi",
+        tags: ["Retro", "Bollywood", "Evergreen"],
+        stream: "https://stream.zeno.fm/0t8yv782kwzuv",
+        cover: "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=400&q=80",
+        rating: "4.9 ★",
+        bitrate: "128 kbps",
+        recommended: true
+      },
+      {
+        id: "punjabi-hits-radio",
+        name: "Punjabi Dhol & Hits",
+        tagline: "Sidhu Moosewala, Diljit, AP Dhillon & Bhangra",
+        lang: "Punjabi",
+        tags: ["Punjabi", "Bhangra", "Party"],
+        stream: "https://stream.zeno.fm/u1v77y54tehvv",
+        cover: "https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?w=400&q=80",
+        rating: "4.8 ★",
+        bitrate: "128 kbps",
+        recommended: true
+      },
+      {
+        id: "tamil-sun-fm",
+        name: "Tamil Kuthu & Melodies",
+        tagline: "Anirudh, AR Rahman, Yuvan Shankar Raja",
+        lang: "Tamil",
+        tags: ["Tamil", "South Hits", "Kollywood"],
+        stream: "https://stream.zeno.fm/0r0xa792kwzuv",
+        cover: "https://images.unsplash.com/photo-1518609878373-06d740f60d8b?w=400&q=80",
+        rating: "4.7 ★",
+        bitrate: "128 kbps",
+        recommended: true
+      },
+      {
+        id: "telugu-mirchi-hits",
+        name: "Telugu Tollywood Beats",
+        tagline: "Thaman S, DSP, MM Keeravaani Nonstop",
+        lang: "Telugu",
+        tags: ["Telugu", "South Hits", "Tollywood"],
+        stream: "https://stream.zeno.fm/y8r7u812kwzuv",
+        cover: "https://images.unsplash.com/photo-1465847899084-d164df4dedc6?w=400&q=80",
+        rating: "4.7 ★",
+        bitrate: "128 kbps",
+        recommended: false
+      },
+      {
+        id: "malayalam-club-radio",
+        name: "Malayalam Super Hits",
+        tagline: "Soulful Kerala Melodies & Mollywood Beats",
+        lang: "Malayalam",
+        tags: ["Malayalam", "South Hits"],
+        stream: "https://stream.zeno.fm/6v0m33q5f0hvv",
+        cover: "https://images.unsplash.com/photo-1506157786151-b8491531f063?w=400&q=80",
+        rating: "4.8 ★",
+        bitrate: "128 kbps",
+        recommended: false
+      },
+      {
+        id: "desi-lofi-beats",
+        name: "Desi Chill & Hindi Lo-Fi",
+        tagline: "Acoustic covers, late night vibes & peaceful lo-fi",
+        lang: "Hindi",
+        tags: ["Chill", "Lo-Fi", "Acoustic"],
+        stream: "https://stream.zeno.fm/99m83s24tehvv",
+        cover: "https://images.unsplash.com/photo-1518895949257-7621c3c786d7?w=400&q=80",
+        rating: "4.9 ★",
+        bitrate: "128 kbps",
+        recommended: true
+      },
+      {
+        id: "bhakti-sangeet-radio",
+        name: "Divya Bhakti & Bhajans",
+        tagline: "Morning Mantras, Aarti, Krishna & Shiv Bhajans",
+        lang: "Devotional",
+        tags: ["Devotional", "Spiritual", "Peace"],
+        stream: "https://stream.zeno.fm/k2k0z1g4tehvv",
+        cover: "https://images.unsplash.com/photo-1609137144813-7d9921338f24?w=400&q=80",
+        rating: "4.9 ★",
+        bitrate: "128 kbps",
+        recommended: true
+      },
+      {
+        id: "sufi-ghazal-radio",
+        name: "Sufiyana & Mehfil Ghazals",
+        tagline: "Jagjit Singh, Nusrat Fateh Ali Khan, Rahat",
+        lang: "Sufi",
+        tags: ["Sufi", "Ghazals", "Soulful"],
+        stream: "https://stream.zeno.fm/3g2b1uvdkehvv",
+        cover: "https://images.unsplash.com/photo-1447752875215-b2761acb3c5d?w=400&q=80",
+        rating: "4.9 ★",
+        bitrate: "128 kbps",
+        recommended: true
+      },
+      {
+        id: "bengali-rabindra-hits",
+        name: "Bengali Rabindra & Pop",
+        tagline: "Kolkata FM Melodies & Classic Adhunik Gaan",
+        lang: "Bengali",
+        tags: ["Bengali", "Kolkata", "Regional"],
+        stream: "https://stream.zeno.fm/7k9vqmz24ehvv",
+        cover: "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=400&q=80",
+        rating: "4.6 ★",
+        bitrate: "128 kbps",
+        recommended: false
+      },
+      {
+        id: "air-fm-gold",
+        name: "AIR FM Gold Mumbai/Delhi",
+        tagline: "All India Radio National Gold & News Bulletins",
+        lang: "Hindi",
+        tags: ["AIR", "News", "Classics"],
+        stream: "https://stream.zeno.fm/8x9v4893wuvvv",
+        cover: "https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?w=400&q=80",
+        rating: "4.8 ★",
+        bitrate: "128 kbps",
+        recommended: true
+      }
+    ];
+
+    // State
+    let currentStationIndex = 0;
+    let isPlaying = false;
+    let favorites = JSON.parse(localStorage.getItem('desi_waves_favs') || '[]');
+    let currentFilterLang = 'all';
+    let currentSearchQuery = '';
+    let currentTag = '';
+    let showFavoritesOnly = false;
+
+    // Elements
+    const audio = document.getElementById('audioElement');
+    const stationsGrid = document.getElementById('stationsGrid');
+    const searchInput = document.getElementById('searchInput');
+    const favFilterBtn = document.getElementById('favFilterBtn');
+    const randomStationBtn = document.getElementById('randomStationBtn');
+    const langPills = document.querySelectorAll('#langPills .pill-btn');
+    const stationCountDisplay = document.getElementById('stationCountDisplay');
+    const currentListTitle = document.getElementById('currentListTitle');
+
+    // Player Elements
+    const masterPlayBtn = document.getElementById('masterPlayBtn');
+    const playIcon = document.getElementById('playIcon');
+    const pauseIcon = document.getElementById('pauseIcon');
+    const bufferingSpinner = document.getElementById('bufferingSpinner');
+    const playerName = document.getElementById('playerName');
+    const playerSub = document.getElementById('playerSub');
+    const playerArtwork = document.getElementById('playerArtwork');
+    const playerFavToggle = document.getElementById('playerFavToggle');
+    const prevStationBtn = document.getElementById('prevStationBtn');
+    const nextStationBtn = document.getElementById('nextStationBtn');
+    const volumeRange = document.getElementById('volumeRange');
+    const muteBtn = document.getElementById('muteBtn');
+    const streamStatus = document.getElementById('streamStatus');
+
+    // Hero elements
+    const heroTitle = document.getElementById('heroTitle');
+    const heroDesc = document.getElementById('heroDesc');
+    const heroCover = document.getElementById('heroCover');
+    const heroPlayBtn = document.getElementById('heroPlayBtn');
+    const heroSaveBtn = document.getElementById('heroSaveBtn');
+    const toastBox = document.getElementById('toastBox');
+    const toastMsg = document.getElementById('toastMsg');
+
+    // Initialize Spotlight with Station 0
+    function updateHero(station) {
+      if (!station) return;
+      heroTitle.textContent = station.name;
+      heroDesc.textContent = `${station.tagline} • Curated for high sound fidelity and seamless streaming.`;
+      heroCover.src = station.cover;
+      heroPlayBtn.onclick = () => playStationById(station.id);
+      heroSaveBtn.onclick = () => toggleFavorite(station.id);
+    }
+
+    // Toast helper
+    function showToast(message) {
+      toastMsg.textContent = message;
+      toastBox.classList.add('show');
+      setTimeout(() => toastBox.classList.remove('show'), 2600);
+    }
+
+    // Toggle Favorite
+    function toggleFavorite(id) {
+      if (favorites.includes(id)) {
+        favorites = favorites.filter(item => item !== id);
+        showToast('Removed from saved stations');
+      } else {
+        favorites.push(id);
+        showToast('Added to your favorite stations ❤️');
+      }
+      localStorage.setItem('desi_waves_favs', JSON.stringify(favorites));
+      updateFavUI();
+      renderStations();
+    }
+
+    function updateFavUI() {
+      const currentStation = STATIONS[currentStationIndex];
+      if (currentStation && favorites.includes(currentStation.id)) {
+        playerFavToggle.classList.add('is-fav');
+      } else {
+        playerFavToggle.classList.remove('is-fav');
+      }
+
+      if (showFavoritesOnly) {
+        favFilterBtn.style.color = '#f43f5e';
+      } else {
+        favFilterBtn.style.color = '';
+      }
+    }
+
+    // Render Stations Grid
+    function renderStations() {
+      let filtered = STATIONS.filter(station => {
+        // Favorites mode
+        if (showFavoritesOnly && !favorites.includes(station.id)) return false;
+
+        // Language filter
+        if (currentFilterLang !== 'all' && station.lang !== currentFilterLang) {
+          if (!station.tags.some(t => t.toLowerCase() === currentFilterLang.toLowerCase())) {
+            return false;
+          }
+        }
+
+        // Tag filter
+        if (currentTag && !station.tags.includes(currentTag) && station.lang !== currentTag) {
+          return false;
+        }
+
+        // Search query
+        if (currentSearchQuery) {
+          const q = currentSearchQuery.toLowerCase();
+          const matchName = station.name.toLowerCase().includes(q);
+          const matchTagline = station.tagline.toLowerCase().includes(q);
+          const matchLang = station.lang.toLowerCase().includes(q);
+          const matchTags = station.tags.some(t => t.toLowerCase().includes(q));
+          return matchName || matchTagline || matchLang || matchTags;
+        }
+
+        return true;
+      });
+
+      stationCountDisplay.textContent = `${filtered.length} Station${filtered.length === 1 ? '' : 's'}`;
+
+      if (filtered.length === 0) {
+        stationsGrid.innerHTML = `
+          <div class="empty-state" style="grid-column: 1 / -1;">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="margin-bottom: 0.8rem; opacity: 0.6;">
+              <circle cx="12" cy="12" r="10"/>
+              <line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/>
+            </svg>
+            <h3>No Indian radio stations found</h3>
+            <p style="margin-top: 4px; font-size: 0.88rem;">Try clearing search filters or pick another language.</p>
+            <button class="btn-secondary" style="margin-top: 1rem;" onclick="resetFilters()">View All Stations</button>
+          </div>
+        `;
+        return;
+      }
+
+      stationsGrid.innerHTML = filtered.map(station => {
+        const isCurrentPlaying = isPlaying && STATIONS[currentStationIndex]?.id === station.id;
+        const isFav = favorites.includes(station.id);
+
+        return `
+          <div class="station-card ${isCurrentPlaying ? 'playing' : ''}" onclick="playStationById('${station.id}')">
+            <div class="station-cover-box">
+              <img src="${station.cover}" alt="${station.name}" loading="lazy" />
+              <div class="play-overlay">
+                ${isCurrentPlaying ? `
+                  <div class="mini-eq">
+                    <span></span><span></span><span></span>
+                  </div>
+                ` : `
+                  <svg viewBox="0 0 24 24">
+                    <polygon points="6 3 20 12 6 21 6 3"/>
+                  </svg>
+                `}
+              </div>
+            </div>
+
+            <div class="station-info">
+              <div class="station-title">${station.name}</div>
+              <div class="station-desc">${station.tagline}</div>
+              <div class="station-meta">
+                <span class="meta-tag lang">${station.lang}</span>
+                <span class="meta-tag">${station.tags[0] || 'Desi'}</span>
+                <span class="meta-tag">${station.bitrate}</span>
+              </div>
+            </div>
+
+            <button class="fav-btn ${isFav ? 'is-fav' : ''}" 
+                    title="Bookmark" 
+                    onclick="event.stopPropagation(); toggleFavorite('${station.id}')">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="${isFav ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2">
+                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+              </svg>
+            </button>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // Playback functions
+    function playStationById(id) {
+      const idx = STATIONS.findIndex(s => s.id === id);
+      if (idx !== -1) {
+        if (currentStationIndex === idx && isPlaying) {
+          pauseAudio();
+          return;
+        }
+        currentStationIndex = idx;
+        loadAndPlayCurrentStation();
+      }
+    }
+
+    function loadAndPlayCurrentStation() {
+      const station = STATIONS[currentStationIndex];
+      if (!station) return;
+
+      playerName.textContent = station.name;
+      playerSub.textContent = `${station.lang} • ${station.tagline}`;
+      playerArtwork.src = station.cover;
+      updateHero(station);
+      updateFavUI();
+
+      showBuffering(true);
+      streamStatus.textContent = 'Connecting to stream...';
+
+      audio.src = station.stream;
+      audio.load();
+
+      const playPromise = audio.play();
+      if (playPromise !== undefined) {
+        playPromise.then(() => {
+          isPlaying = true;
+          showBuffering(false);
+          updatePlayPauseButton();
+          streamStatus.textContent = `Live Streaming • ${station.bitrate}`;
+          renderStations();
+        }).catch(err => {
+          console.warn("Autoplay / Stream load issue:", err);
+          showBuffering(false);
+          streamStatus.textContent = 'Tap play to start audio';
+          updatePlayPauseButton();
+        });
+      }
+    }
+
+    function togglePlayPause() {
+      if (isPlaying) {
+        pauseAudio();
+      } else {
+        if (!audio.src || audio.src === window.location.href) {
+          loadAndPlayCurrentStation();
+        } else {
+          showBuffering(true);
+          audio.play().then(() => {
+            isPlaying = true;
+            showBuffering(false);
+            updatePlayPauseButton();
+            renderStations();
+          }).catch(() => {
+            showBuffering(false);
+          });
+        }
+      }
+    }
+
+    function pauseAudio() {
+      audio.pause();
+      isPlaying = false;
+      showBuffering(false);
+      updatePlayPauseButton();
+      streamStatus.textContent = 'Stream Paused';
+      renderStations();
+    }
+
+    function showBuffering(loading) {
+      if (loading) {
+        playIcon.style.display = 'none';
+        pauseIcon.style.display = 'none';
+        bufferingSpinner.style.display = 'block';
+      } else {
+        bufferingSpinner.style.display = 'none';
+        updatePlayPauseButton();
+      }
+    }
+
+    function updatePlayPauseButton() {
+      if (isPlaying) {
+        playIcon.style.display = 'none';
+        pauseIcon.style.display = 'block';
+      } else {
+        playIcon.style.display = 'block';
+        pauseIcon.style.display = 'none';
+      }
+    }
+
+    function playNext() {
+      currentStationIndex = (currentStationIndex + 1) % STATIONS.length;
+      loadAndPlayCurrentStation();
+    }
+
+    function playPrev() {
+      currentStationIndex = (currentStationIndex - 1 + STATIONS.length) % STATIONS.length;
+      loadAndPlayCurrentStation();
+    }
+
+    // Audio element events
+    audio.addEventListener('waiting', () => showBuffering(true));
+    audio.addEventListener('playing', () => {
+      isPlaying = true;
+      showBuffering(false);
+      updatePlayPauseButton();
+    });
+    audio.addEventListener('error', () => {
+      showBuffering(false);
+      isPlaying = false;
+      streamStatus.textContent = 'Stream unavailable. Trying next...';
+      updatePlayPauseButton();
+      showToast('Station is currently offline. Skipping...');
+      setTimeout(playNext, 1500);
+    });
+
+    // Volume & Mute
+    let lastVolume = 0.8;
+    audio.volume = 0.8;
+    volumeRange.addEventListener('input', (e) => {
+      audio.volume = e.target.value;
+      if (audio.volume > 0) audio.muted = false;
+    });
+
+    muteBtn.addEventListener('click', () => {
+      audio.muted = !audio.muted;
+      if (audio.muted) {
+        muteBtn.style.color = '#f43f5e';
+      } else {
+        muteBtn.style.color = '';
+      }
+    });
+
+    // Filtering logic
+    function filterByLang(lang) {
+      currentFilterLang = lang;
+      currentTag = '';
+      showFavoritesOnly = false;
+      
+      langPills.forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.lang === lang);
+      });
+
+      if (lang === 'all') {
+        currentListTitle.textContent = 'Top Recommended Indian Radios';
+      } else {
+        currentListTitle.textContent = `Recommended ${lang} Radios`;
+      }
+
+      renderStations();
+    }
+
+    function filterByTag(tag) {
+      currentTag = tag;
+      currentFilterLang = 'all';
+      showFavoritesOnly = false;
+      langPills.forEach(btn => btn.classList.remove('active'));
+      currentListTitle.textContent = `Recommended: ${tag}`;
+      renderStations();
+    }
+
+    function resetFilters() {
+      searchInput.value = '';
+      currentSearchQuery = '';
+      currentTag = '';
+      showFavoritesOnly = false;
+      filterByLang('all');
+    }
+
+    // Event Listeners
+    masterPlayBtn.addEventListener('click', togglePlayPause);
+    nextStationBtn.addEventListener('click', playNext);
+    prevStationBtn.addEventListener('click', playPrev);
+
+    playerFavToggle.addEventListener('click', () => {
+      const station = STATIONS[currentStationIndex];
+      if (station) toggleFavorite(station.id);
+    });
+
+    langPills.forEach(btn => {
+      btn.addEventListener('click', () => {
+        filterByLang(btn.dataset.lang);
+      });
+    });
+
+    searchInput.addEventListener('input', (e) => {
+      currentSearchQuery = e.target.value.trim();
+      currentListTitle.textContent = currentSearchQuery 
+        ? `Search results for "${currentSearchQuery}"` 
+        : 'Top Recommended Indian Radios';
+      renderStations();
+    });
+
+    favFilterBtn.addEventListener('click', () => {
+      showFavoritesOnly = !showFavoritesOnly;
+      if (showFavoritesOnly) {
+        currentListTitle.textContent = 'Your Saved Favorite Stations';
+        showToast('Showing your saved stations');
+      } else {
+        currentListTitle.textContent = 'Top Recommended Indian Radios';
+      }
+      updateFavUI();
+      renderStations();
+    });
+
+    randomStationBtn.addEventListener('click', () => {
+      const randomIndex = Math.floor(Math.random() * STATIONS.length);
+      currentStationIndex = randomIndex;
+      loadAndPlayCurrentStation();
+      showToast(`Shuffled to ${STATIONS[randomIndex].name}! 🎲`);
+    });
+
+    // Keyboard Shortcuts (Space to play/pause, Arrow keys for next/prev)
+    window.addEventListener('keydown', (e) => {
+      if (e.target.tagName === 'INPUT') return;
+      if (e.code === 'Space') {
+        e.preventDefault();
+        togglePlayPause();
+      } else if (e.code === 'ArrowRight') {
+        playNext();
+      } else if (e.code === 'ArrowLeft') {
+        playPrev();
+      }
+    });
+
+    // Initial Setup
+    updateHero(STATIONS[0]);
+    renderStations();
+    updateFavUI();
+  </script>
+</body>
+</html>
